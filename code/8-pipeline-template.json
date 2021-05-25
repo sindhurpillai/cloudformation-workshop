@@ -1,21 +1,16 @@
 {
-  "AWSTemplateFormatVersion": "2010-09-09",
-  "Parameters": {
-      "LatestAmiId": {
-          "Description": "Gets the latest AMI from Systems Manager Parameter store",
-          "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
-          "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
-      }
-  },
-  "Resources": {
-      "WebServerInstance": {
-          "Type": "AWS::EC2::Instance",
-          "Properties": {
-              "ImageId": {
-                  "Ref": "LatestAmiId"
-              },
-              "InstanceType": "t3.small"
-          }
-      }
-  }
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Resources": {
+        "S3Bucket": {
+            "Type": "AWS::S3::Bucket"
+        }
+    },
+    "Outputs": {
+        "BucketName": {
+            "Value": {
+                "Ref": "S3Bucket"
+            },
+            "Description": "Name of the Amazon S3 bucket"
+        }
+    }
 }
