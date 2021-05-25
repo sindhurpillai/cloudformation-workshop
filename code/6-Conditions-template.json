@@ -11,20 +11,22 @@
             ],
             "ConstraintDescription": "Specify either Dev, Test or Prod."
         },
-        "EC2InstanceType": {
-            "Type": "String",
-            "Description": "Select instance type",
-            "AllowedValues": [
-                "t3.small",
-                "t3.large"
-            ],
-            "ConstraintDescription" : "Instance type was not selected from the drop-down"
-            
-        },
         "LatestAmiId": {
             "Description": "Gets the latest AMI from Systems Manager Parameter store",
             "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
             "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+        }
+    },
+    "Mappings": {
+        "EnvironmentToInstanceType": {
+            "Dev": {
+                "EC2": "t3.small",
+                "RDS": "db.t3.medium"
+            },
+            "Prod": {
+                "EC2": "t3.large",
+                "RDS": "db.m6g.large"
+            }
         }
     },
     "Conditions": {
@@ -45,16 +47,33 @@
                     "Ref": "LatestAmiId"
                 },
                 "InstanceType": {
-                    "Ref": "EC2InstanceType"
+                    "Fn::FindInMap": [
+                        "EnvironmentToInstanceType",
+                        {
+                            "Ref": "Environment"
+                        },
+                        "EC2"
+                    ]
                 }
             }
         },
-        "ProductionS3Bucket": {
-            "Type": "AWS::S3::Bucket",
+        "VPNServerInstance": {
+            "Type": "AWS::EC2::Instance",
             "Condition": "isProdOnlyResource",
             "Properties": {
-                "BucketName": "prod-s3"
+                "ImageId": {
+                    "Ref": "LatestAmiId"
+                },
+                "InstanceType": {
+                    "Fn::FindInMap": [
+                        "EnvironmentToInstanceType",
+                        {
+                            "Ref": "Environment"
+                        },
+                        "EC2"
+                    ]
+                }
             }
-        }  
+        }
     }
 }

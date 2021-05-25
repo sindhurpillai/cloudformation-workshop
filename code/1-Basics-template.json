@@ -3,10 +3,7 @@
     "Description": "Creating S3 bucket for CloudFormation Workshop",
     "Resources": {
         "S3BucketImages": {
-            "Type": "AWS::S3::Bucket",
-            "Properties": {
-                "BucketName": "replace-with-your-name-1"
-            }
+            "Type": "AWS::S3::Bucket"
         }
     },
     "Outputs": {
