@@ -2,17 +2,17 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "Creating S3 bucket for CloudFormation Workshop",
     "Resources": {
-        "S3Bucket": {
+        "S3BucketImages": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
-                "BucketName": "s3-workshop"
+                "BucketName": "replace-with-your-name-1"
             }
         }
     },
     "Outputs": {
         "S3BucketName": {
             "Value": {
-                "Ref": "S3Bucket"
+                "Ref": "S3BucketImages"
             },
             "Description": "Name of S3 bucket created by CloudFormation"
         }
