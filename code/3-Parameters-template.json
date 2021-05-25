@@ -1,0 +1,42 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Passing input parameter to the template",
+    "Parameters": {
+        "EC2InstanceType": {
+            "Type": "String",
+            "Description": "Select instance type",
+            "AllowedValues": [
+                "t3.small",
+                "t3.large"
+            ],
+            "ConstraintDescription" : "Instance type was not selected from the drop-down"
+            
+        },
+        "LatestAmiId": {
+            "Description": "Gets the latest AMI from Systems Manager Parameter store",
+            "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+            "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+        }
+    },
+    "Resources": {
+        "WebServerInstance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": {
+                    "Ref": "LatestAmiId"
+                },
+                "InstanceType": {
+                    "Ref": "EC2InstanceType"
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "ami": {
+            "Value": {
+                "Ref": "LatestAmiId"
+            },
+            "Description": "Name of AMI ID fetched for Systems Manager - Parameter Store"
+        }
+    }
+}

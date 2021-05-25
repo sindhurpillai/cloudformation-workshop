@@ -1,0 +1,40 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Creating security group and passing it cross stack.",
+  "Resources": {
+    "WebServerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enable HTTP ingress",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "Tags" : [
+          {
+             "Key" : "Name",
+             "Value" : "Shared-Security-Group"
+          }   
+        ]    
+      }
+    }
+  },
+  "Outputs": {
+    "WebServerSecurityGroup": {
+      "Description": "The security group ID to use for public web servers",
+      "Value": {
+        "Fn::GetAtt": [
+          "WebServerSecurityGroup",
+          "GroupId"
+        ]
+      },
+      "Export": {
+        "Name": "Shared-Web-SG"
+      }
+    }
+  }
+}

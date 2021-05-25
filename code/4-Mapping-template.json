@@ -1,0 +1,52 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "CFN 101 Workshop",
+    "Parameters": {
+        "Environment": {
+            "Description": "Specify the Environment type of the stack.",
+            "Type": "String",
+            "Default": "Dev",
+            "AllowedValues": [
+                "Dev",
+                "Prod"
+            ],
+            "ConstraintDescription": "Specify either Dev, Test or Prod."
+        },
+        "LatestAmiId": {
+            "Description": "Gets the latest AMI from Systems Manager Parameter store",
+            "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+            "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+        }
+    },
+    "Mappings": {
+        "EnvironmentToInstanceType": {
+            "Dev": {
+                "EC2": "t3.small",
+                "RDS": "db.t3.medium"
+            },
+            "Prod": {
+                "EC2": "t3.large",
+                "RDS": "db.m6g.large"
+            }
+        }
+    },
+    "Resources": {
+        "WebServerInstance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": {
+                    "Ref": "LatestAmiId"
+                },
+                "InstanceType": {
+                    "Fn::FindInMap": [
+                        "EnvironmentToInstanceType",
+                        {
+                            "Ref": "Environment"
+                        },
+                        "EC2"
+                    ]
+                }
+            }
+        }
+    }
+}

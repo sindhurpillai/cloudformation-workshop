@@ -1,0 +1,60 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "Environment": {
+            "Description": "Specify the Environment type of the stack.",
+            "Type": "String",
+            "Default": "Dev",
+            "AllowedValues": [
+                "Dev",
+                "Prod"
+            ],
+            "ConstraintDescription": "Specify either Dev, Test or Prod."
+        },
+        "EC2InstanceType": {
+            "Type": "String",
+            "Description": "Select instance type",
+            "AllowedValues": [
+                "t3.small",
+                "t3.large"
+            ],
+            "ConstraintDescription" : "Instance type was not selected from the drop-down"
+            
+        },
+        "LatestAmiId": {
+            "Description": "Gets the latest AMI from Systems Manager Parameter store",
+            "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+            "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+        }
+    },
+    "Conditions": {
+        "isProdOnlyResource": {
+            "Fn::Equals": [
+                {
+                    "Ref": "Environment"
+                },
+                "Prod"
+            ]
+        }
+    },
+    "Resources": {
+        "WebServerInstance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": {
+                    "Ref": "LatestAmiId"
+                },
+                "InstanceType": {
+                    "Ref": "EC2InstanceType"
+                }
+            }
+        },
+        "ProductionS3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Condition": "isProdOnlyResource",
+            "Properties": {
+                "BucketName": "prod-s3"
+            }
+        }  
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Testing DeletePolicy",
+  "Resources": {
+      "S3Bucket": {
+          "Type": "AWS::S3::Bucket",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+              "BucketName": "s3-workshop"
+           }
+      }
+    },
+    "Outputs": {
+        "S3BucketName": {
+            "Value": {
+                "Ref": "S3Bucket"
+            },
+            "Description": "Name of S3 bucket created by CloudFormation"
+        }
+    }
+  }
